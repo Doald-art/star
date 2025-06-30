@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星空下的牢赖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #0a0a23 0%, #1a1a3a 50%, #2a2a4a 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 星空背景 */
+        .starry-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: 
+                radial-gradient(circle at 20% 80%, #1e3c72 0%, #2a5298 50%, #4a7fc8 100%),
+                radial-gradient(circle at 80% 20%, #667eea 0%, #764ba2 100%),
+                radial-gradient(circle at 40% 40%, #f093fb 0%, #f5576c 100%);
+            background-size: 200% 200%, 150% 150%, 100% 100%;
+            animation: swirl 20s ease-in-out infinite;
+            z-index: -2;
+        }
+        
+        @keyframes swirl {
+            0%, 100% { 
+                background-position: 0% 50%, 100% 50%, 50% 50%; 
+            }
+            50% { 
+                background-position: 100% 50%, 0% 50%, 25% 75%; 
+            }
+        }
+        
+        /* 星星 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        .star:nth-child(odd) {
+            animation-delay: 1s;
+        }
+        
+        .star:nth-child(3n) {
+            animation-delay: 2s;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* 月亮 */
+        .moon {
+            position: fixed;
+            top: 15%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            animation: moonGlow 4s ease-in-out infinite;
+            z-index: 1;
+        }
+        
+        @keyframes moonGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.8); }
+        }
+        
+        /* 地面 */
+        .ground {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(180deg, #2d4a22 0%, #1a2f15 100%);
+            z-index: 0;
+        }
+        
+        /* 树 */
+        .tree {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        
+        .tree-trunk {
+            width: 20px;
+            height: 120px;
+            background: linear-gradient(to right, #3d2914, #5d3a1a);
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+        
+        .tree-branches {
+            position: relative;
+            width: 200px;
+            height: 150px;
+            margin: -20px auto 0;
+        }
+        
+        .branch {
+            position: absolute;
+            background: #2d4a22;
+            border-radius: 50%;
+            animation: sway 6s ease-in-out infinite;
+        }
+        
+        .branch:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 0;
+            left: 60px;
+            animation-delay: 0s;
+        }
+        
+        .branch:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            top: 30px;
+            left: 50px;
+            animation-delay: 1s;
+        }
+        
+        .branch:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            top: 60px;
+            left: 40px;
+            animation-delay: 2s;
+        }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        
+        /* 主要内容容器 */
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* 照片容器 */
+        .photo-container {
+            position: relative;
+            margin-bottom: 30px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border: 8px solid #d4af37;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 20px rgba(212, 175, 55, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* 名字样式 */
+        .name {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6),
+                0 0 30px rgba(255, 215, 0, 0.4);
+            animation: nameGlow 3s ease-in-out infinite;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+            letter-spacing: 0.1em;
+        }
+        
+        @keyframes nameGlow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 30px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 15px rgba(255, 215, 0, 1),
+                    0 0 25px rgba(255, 215, 0, 0.8),
+                    0 0 35px rgba(255, 215, 0, 0.6);
+            }
+        }
+        
+        /* 诗句 */
+        .poem {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            text-align: center;
+            line-height: 1.8;
+            max-width: 600px;
+            font-style: italic;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 4s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .name {
+                font-size: 2.5em;
+            }
+            
+            .photo-frame {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .photo {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .poem {
+                font-size: 1em;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="starry-sky"></div>
+    
+    <!-- 星星 -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- 月亮 -->
+    <div class="moon"></div>
+    
+    <!-- 地面 -->
+    <div class="ground"></div>
+    
+    <!-- 树 -->
+    <div class="tree">
+        <div class="tree-branches">
+            <div class="branch"></div>
+            <div class="branch"></div>
+            <div class="branch"></div>
+        </div>
+        <div class="tree-trunk"></div>
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="content">
+        <div class="photo-container">
+            <div class="photo-frame">
+                <!-- 在这里替换为你的照片URL -->
+                <img src="your-photo-url-here.jpg" alt="牢赖的照片" class="photo">
+            </div>
+        </div>
+        
+        <h1 class="name">牢赖</h1>
+        
+        <div class="poem">
+            在这星辰旋转的夜晚<br>
+            月光洒向大地如诗如画<br>
+            古老的树木轻柔摇摆<br>
+            见证着时光的流逝与美好<br><br>
+            
+            愿你如星空般璀璨<br>
+            如月亮般温柔明亮<br>
+            在生命的画布上<br>
+            绘制属于自己的浪漫传奇
+        </div>
+    </div>
+
+    <script>
+        // 创建星星
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 100;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // 随机位置
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 70 + '%';
+                
+                // 随机大小
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // 随机动画延迟
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // 页面加载完成后创建星星
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // 添加鼠标移动视差效果
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                const stars = document.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    const speed = (index % 3 + 1) * 0.5;
+                    const x = (mouseX - 0.5) * speed;
+                    const y = (mouseY - 0.5) * speed;
+                    star.style.transform = `translate(${x}px, ${y}px)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
